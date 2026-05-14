@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Redoing OpenGL/Redoing OpenGL.vcxproj" Id="d552f68c-002d-4fc1-b8b3-af1e3d79f424" />
+</Solution>
