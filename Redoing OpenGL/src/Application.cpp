@@ -31,17 +31,37 @@ int main(void)
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
+    float positions[6] = {
+        -0.5f, -0.5f,
+         0.0f,  0.5f,
+         0.5f, -0.5f,
+    };
+
+    unsigned int buffer;
+    // A buffer is simply an array of bytes, or an array of data.
+    // This makes a unique id for the buffer so we can tell OpenGL which buffer to draw when it's time
+    glGenBuffers(1, &buffer);
+    // Binding in OpenGL is simply selecting a buffer, so this selects the specified buffer, and sets it up to be acted on in future lines of code
+    // Since the buffer is simply an array of data, we use GL_ARRAY_BUFFER.
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    // This copies the data from the positions array into the currently bound buffer in GL_ARRAY_BUFFER
+    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+
+    // glVertexAttribPointer tells OpenGL how to interpret the array buffer's vertex data when a draw call is run.
+    // When we make a shader, we have to match the same data layout on this side (GPU) and the shader side (GPU).
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (const void*)0);
+
+    // Unbinds the 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBegin(GL_TRIANGLES);
-        glVertex2d(-0.5f, -0.5f);
-        glVertex2d(0.0f, 0.5f);
-        glVertex2d(0.5f, -0.5f);
-        glEnd();
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
