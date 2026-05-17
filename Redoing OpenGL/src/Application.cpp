@@ -9,9 +9,14 @@
 #include <sstream>
 
 #define ASSERT(x) if (!(x)) __debugbreak();
-#define GlCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
+#ifdef _DEBUG
+    #define GlCall(x) GLClearError();\
+        x;\
+        ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+#else
+    #define GlCall(x) x
+#endif
     
 
 static void GLClearError() {
@@ -138,6 +143,9 @@ int main(void)
     This line makes the OpenGL code operate in the specified window*/
     glfwMakeContextCurrent(window);
 
+    // This enables v-sync
+    glfwSwapInterval(1);
+
     // glewInit() is here because it has to be called after a valid OpenGL rendering context is created
     if (glewInit() != GLEW_OK)
         std::cout << "Error!" << std::endl;
@@ -181,8 +189,15 @@ int main(void)
     // This binds the shader program so that it is used on oncoming draw calls.
     GlCall(glUseProgram(shader));
 
+    GlCall(int location = glGetUniformLocation(shader, "u_Color"));
+    ASSERT(location != -1);
+    GlCall(glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f));
+
     // Unbinds the array buffer
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+    float r = 0.0f;
+    float increment = 0.01f;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -190,8 +205,18 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
+        GlCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
         // This issues a draw call on the currently bound array buffer
-        GlCall(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr));
+        GlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+        if (r < 0.0f) {
+            increment = 0.01f;
+        }
+        else if (r > 1.0f) {
+            increment = -0.01f;
+        }
+
+        r += increment;
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
