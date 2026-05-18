@@ -131,6 +131,10 @@ int main(void)
     if (!glfwInit())
         return -1;
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
     if (!window)
@@ -164,6 +168,10 @@ int main(void)
         2, 3, 0
     };
 
+    unsigned int vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
     unsigned int buffer;
     // A buffer is simply an array of bytes, or an array of data.
     // This makes a unique id for the buffer so we can tell OpenGL which buffer to draw when it's time
@@ -172,7 +180,7 @@ int main(void)
     // Since the buffer is simply an array of data, we use GL_ARRAY_BUFFER.
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
     // This copies the data from the positions array into the currently bound buffer in GL_ARRAY_BUFFER
-    GlCall(glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
+    GlCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
     // glVertexAttribPointer tells OpenGL how to interpret the array buffer's vertex data when a draw call is run.
     // When we make a shader, we have to match the same data layout on this side (GPU) and the shader side (GPU).
@@ -193,8 +201,10 @@ int main(void)
     ASSERT(location != -1);
     GlCall(glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f));
 
-    // Unbinds the array buffer
+    GlCall(glUseProgram(0));
+    GlCall(glBindVertexArray(0));
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GlCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
     float r = 0.0f;
     float increment = 0.01f;
@@ -204,6 +214,12 @@ int main(void)
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
+
+        GlCall(glUseProgram(shader));
+
+        GlCall(glBindVertexArray(vao));
+
+        GlCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
 
         GlCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
         // This issues a draw call on the currently bound array buffer
