@@ -1,2 +1,5 @@
 ﻿  Application.cpp
-  Redoing OpenGL.vcxproj -> C:\Users\benco\source\repos\Redoing OpenGL\Debug\Redoing OpenGL.exe
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'glew32s.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'F:\John's Stuff\Programing\C++\Relearning OpenGL - Git\Relearning-OpenGL\Debug\glew32s.pdb'; linking object as if no debug info
+  Redoing OpenGL.vcxproj -> F:\John's Stuff\Programing\C++\Relearning OpenGL - Git\Relearning-OpenGL\Debug\Redoing OpenGL.exe
